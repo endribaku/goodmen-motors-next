@@ -59,8 +59,12 @@ export const carType = defineType({
             name: 'slug',
             title: 'Slug',
             type: 'slug',
+            description: 'Slug will be generated automatically based on the title given. You can change it if you want.',
             options: {
                 maxLength: 96,
+                source: (doc, context) => (context.parent as { title?: string })?.title || '',
+                slugify: (input) => input.toLowerCase().replace(/ /g, '-'),
+                
             },
             validation: (Rule) => Rule.required(),
         }),
@@ -72,65 +76,65 @@ export const carType = defineType({
             options: {
                 list: [
                     // German
-                    {title: 'Mercedes-Benz', value: 'mercedes_benz'},
-                    {title: 'BMW', value: 'bmw'},
-                    {title: 'Audi', value: 'audi'},
-                    {title: 'Volkswagen', value: 'volkswagen'},
-                    {title: 'Porsche', value: 'porsche'},
-                    {title: 'Opel', value: 'opel'},
+                    {title: 'Mercedes-Benz', value: 'Mercedes-Benz'},
+                    {title: 'BMW', value: 'BMW'},
+                    {title: 'Audi', value: 'Audi'},
+                    {title: 'Volkswagen', value: 'Volkswagen'},
+                    {title: 'Porsche', value: 'Porsche'},
+                    {title: 'Opel', value: 'Opel'},
 
                     // Premium / Luxury
-                    {title: 'Range Rover', value: 'range_rover'},
-                    {title: 'Land Rover', value: 'land_rover'},
-                    {title: 'Lexus', value: 'lexus'},
-                    {title: 'Jaguar', value: 'jaguar'},
-                    {title: 'Maserati', value: 'maserati'},
-                    {title: 'Bentley', value: 'bentley'},
-                    {title: 'Rolls-Royce', value: 'rolls_royce'},
-                    {title: 'Alfa Romeo', value: 'alfa_romeo'},
-                    {title: 'Infiniti', value: 'infiniti'},
-                    {title: 'Acura', value: 'acura'},
+                    {title: 'Range Rover', value: 'Range Rover'},
+                    {title: 'Land Rover', value: 'Land Rover'},
+                    {title: 'Lexus', value: 'Lexus'},
+                    {title: 'Jaguar', value: 'Jaguar'},
+                    {title: 'Maserati', value: 'Maserati'},
+                    {title: 'Bentley', value: 'Bentley'},
+                    {title: 'Rolls-Royce', value: 'Rolls-Royce'},
+                    {title: 'Alfa Romeo', value: 'Alfa Romeo'},
+                    {title: 'Infiniti', value: 'Infiniti'},
+                    {title: 'Acura', value: 'Acura'},
 
                     // US brands (auction stuff)
-                    {title: 'Cadillac', value: 'cadillac'},
-                    {title: 'Chevrolet', value: 'chevrolet'},
-                    {title: 'Dodge', value: 'dodge'},
-                    {title: 'Ford', value: 'ford'},
-                    {title: 'Chrysler', value: 'chrysler'},
-                    {title: 'Jeep', value: 'jeep'},
-                    {title: 'GMC', value: 'gmc'},
-                    {title: 'Tesla', value: 'tesla'},
-                    {title: 'Buick', value: 'buick'},
-                    {title: 'Lincoln', value: 'lincoln'},
+                    {title: 'Cadillac', value: 'Cadillac'},
+                    {title: 'Chevrolet', value: 'Chevrolet'},
+                    {title: 'Dodge', value: 'Dodge'},
+                    {title: 'Ford', value: 'Ford'},
+                    {title: 'Chrysler', value: 'Chrysler'},
+                    {title: 'Jeep', value: 'Jeep'},
+                    {title: 'GMC', value: 'GMC'},
+                    {title: 'Tesla', value: 'Tesla'},
+                    {title: 'Buick', value: 'Buick'},
+                    {title: 'Lincoln', value: 'Lincoln'},
 
                     // Japanese / Korean
-                    {title: 'Toyota', value: 'toyota'},
-                    {title: 'Honda', value: 'honda'},
-                    {title: 'Nissan', value: 'nissan'},
-                    {title: 'Mazda', value: 'mazda'},
-                    {title: 'Subaru', value: 'subaru'},
-                    {title: 'Mitsubishi', value: 'mitsubishi'},
-                    {title: 'Suzuki', value: 'suzuki'},
-                    {title: 'Hyundai', value: 'hyundai'},
-                    {title: 'Kia', value: 'kia'},
+                    {title: 'Toyota', value: 'Toyota'},
+                    {title: 'Honda', value: 'Honda'},
+                    {title: 'Nissan', value: 'Nissan'},
+                    {title: 'Mazda', value: 'Mazda'},
+                    {title: 'Subaru', value: 'Subaru'},
+                    {title: 'Mitsubishi', value: 'Mitsubishi'},
+                    {title: 'Suzuki', value: 'Suzuki'},
+                    {title: 'Hyundai', value: 'Hyundai'},
+                    {title: 'Kia', value: 'Kia'},
 
                     // French / others
-                    {title: 'Renault', value: 'renault'},
-                    {title: 'Peugeot', value: 'peugeot'},
-                    {title: 'Citroën', value: 'citroen'},
-                    {title: 'Dacia', value: 'dacia'},
-                    {title: 'Fiat', value: 'fiat'},
-                    {title: 'Skoda', value: 'skoda'},
-                    {title: 'Seat', value: 'seat'},
+                    {title: 'Renault', value: 'Renault'},
+                    {title: 'Peugeot', value: 'Peugeot'},
+                    {title: 'Citroën', value: 'Citroën'},
+                    {title: 'Dacia', value: 'Dacia'},
+                    {title: 'Fiat', value: 'Fiat'},
+                    {title: 'Skoda', value: 'Skoda'},
+                    {title: 'Seat', value: 'Seat'},
 
                     // Scandinavian
-                    {title: 'Volvo', value: 'volvo'},
-                    {title: 'Saab', value: 'saab'},
+                    {title: 'Volvo', value: 'Volvo'},
+                    {title: 'Saab', value: 'Saab'},
 
                     // Other / fallback
-                    {title: 'Mini', value: 'mini'},
-                    {title: 'Smart', value: 'smart'},
-                    {title: 'Other', value: 'other'},
+                    {title: 'Mini', value: 'Mini'},
+                    {title: 'Smart', value: 'Smart'},
+                    {title: 'Other', value: 'Other'},
                 ],
                 layout: 'dropdown',
             },
@@ -245,8 +249,15 @@ export const carType = defineType({
             name: 'originCountry',
             title: 'Origin country',
             type: 'string',
-            description: 'Prejardhja, psh. USA, Gjermani, Itali',
-            initialValue: 'USA',
+            description: 'Prejardhja, psh. USA, Canada, South Korea',
+            options: {
+                list: [
+                    {title: 'USA', value: 'USA'},
+                    {title: 'Canada', value: 'Canada'},
+                    {title: 'South Korea', value: 'South Korea'},
+                    {title: 'Other', value: 'Other'},
+                ],
+            }
         }),
         defineField({
             name: 'primaryUse',
@@ -266,7 +277,7 @@ export const carType = defineType({
             name: 'status',
             title: 'Status',
             type: 'string',
-            initialValue: 'available_to_order',
+            initialValue: 'in_stock',
             options: {
                 list: [
                     {title: 'Në gjendje', value: 'in_stock'},
@@ -282,56 +293,17 @@ export const carType = defineType({
             type: 'array',
             of: [{type: 'string'}],
             description: 'p.sh. Shqipëri, Kosovë, Maqedoni',
-        }),
-
-        // Description & disclaimer
-        defineField({
-            name: 'description',
-            title: 'Description',
-            type: 'text',
-            rows: 4,
-            description:
-                'Marketing text (mund të jetë në shqip, p.sh. si përshkrimi i Instagramit).',
-        }),
-        defineField({
-            name: 'disclaimer',
-            title: 'Disclaimer',
-            type: 'text',
-            description:
-                'P.S. për defektet, dëmtimet e padukshme, ankandi, etj.',
-        }),
-
-        // Contact
-        defineField({
-            name: 'contactPhones',
-            title: 'Contact phone numbers',
-            type: 'array',
-            of: [{type: 'string'}],
-            description: 'p.sh. 068 938 8587, 068 229 6290',
-        }),
-        defineField({
-            name: 'contactNotes',
-            title: 'Contact notes',
-            type: 'string',
-            description: 'p.sh. “Na kontaktoni DM / WhatsApp / telefon”',
-        }),
-
-        // Marketing / label tags
-        defineField({
-            name: 'labels',
-            title: 'Labels / Marketing tags',
-            type: 'array',
-            of: [{ type: 'string' }],
             options: {
-                layout: 'tags',
                 list: [
-                    { title: 'Featured', value: 'featured' },
-                    { title: 'New arrival', value: 'new_arrival' },
-                    { title: 'Offer', value: 'offer' },
-                    { title: 'Instagram', value: 'instagram' },
-                    { title: 'TikTok', value: 'tiktok' },
+                    {title: 'Albania', value: 'Albania'},
+                    {title: 'Kosovo', value: 'Kosovo'},
+                    {title: 'Other', value: 'Other'},
                 ],
+                layout: 'list',
             },
         }),
+
+
+        
     ]
 });
