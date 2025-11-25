@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist, Geist_Mono, Stack_Sans_Headline, Michroma } from 'next/font/google';
 
 import '@/app/globals.css';
 import Navbar from '@/components/Navbar';
@@ -7,6 +7,8 @@ import Footer from '@/components/Footer';
 
 const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans' });
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' });
+const stackSansHeadline = Stack_Sans_Headline({ subsets: ['latin'], variable: '--font-stack-sans-headline' });
+const michroma = Michroma({ weight: '400', subsets: ['latin'], variable: '--font-michroma' });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://goodmenmotors.com'),
@@ -41,12 +43,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} bg-[#f5f5f5] antialiased dark:bg-black`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${stackSansHeadline.variable} ${michroma.variable} bg-white antialiased`}>
         <div className="flex min-h-screen flex-col">
           <Navbar />
-          <main className="flex-1 bg-linear-to-b from-white via-white to-gray-100 dark:from-black dark:via-black dark:to-gray-950">
-            {children}
-          </main>
+          <main className="flex-1">{children}</main>
           <Footer />
         </div>
       </body>

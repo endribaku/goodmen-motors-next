@@ -1,82 +1,49 @@
 import Link from 'next/link';
 
-const quickLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'Listings', href: '/listings' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' },
-];
-
-const services = [
-  'Car import from USA',
-  'Vehicle inspection & reporting',
-  'Customs clearance assistance',
-  'Door-to-door delivery',
+const footerLinks = [
+  { label: 'MAKINAT', href: '/listings' },
+  { label: 'RRETH NESH', href: '/about' },
+  { label: 'KONTAKT', href: '/contact' },
 ];
 
 export default function Footer() {
-  const year = new Date().getFullYear();
-
   return (
-    <footer className="border-t border-gray-200/70 bg-white dark:border-gray-800/60 dark:bg-black">
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-12 md:grid-cols-4">
-          <div className="space-y-4">
-            <p className="text-2xl font-semibold text-gray-900 dark:text-white">
-              Goodmen <span className="text-amber-500">Motors</span>
-            </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Premium imports with concierge-level service, transparency, and precision.
-            </p>
-          </div>
-
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-              Quick Links
-            </p>
-            <ul className="mt-4 space-y-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
+    <footer className="bg-white border-[#E5E5E5] border-t ">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="text-xl font-semibold text-white flex ">
+            <img src="/brand/logo/goodmenfootertail.svg" alt="" className="" />
+            <img src="/brand/logo/goodmenfooter.svg" alt="Goodmen Motors" className="" />
+          </Link>
+          
+          <div className="flex items-center gap-16"> 
+              <nav className="hidden items-center gap-16 md:flex">
+                {footerLinks.map((link) => (
                   <Link
+                    key={link.href}
                     href={link.href}
-                    className="transition hover:text-amber-600 dark:hover:text-amber-400"
+                    className="text-[15px] tracking-[0.15em] font-normal headline text-[#5B5B5B]"
                   >
                     {link.label}
                   </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+                ))}
+              </nav>
 
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-              Services
-            </p>
-            <ul className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
-              {services.map((service) => (
-                <li key={service}>{service}</li>
-              ))}
-            </ul>
+              <div className="flex items-center gap-2 text-[#5B5B5B] headline text-[15px] tracking-[0.15em] underline decoration-dotted">
+                <a
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition hover:text-white"
+                  aria-label="Instagram"
+                >
+                  <img src="/helper-icons/contact us/instagram.svg" alt="" className="" />
+                </a>
+                <span className="text-sm">INSTAGRAM</span>
+              </div>
+            </div>
           </div>
-
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-              Contact
-            </p>
-            <p className="mt-4 text-sm text-gray-700 dark:text-gray-300">
-              +355 68 000 0000
-              <br />
-              concierge@goodmenmotors.com
-            </p>
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-              Tirana · Pristina · Skopje
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-10 border-t border-gray-200/70 pt-6 text-center text-sm text-gray-500 dark:border-gray-800/70 dark:text-gray-400">
-          © {year} Goodmen Motors. All rights reserved.
-        </div>
+          
       </div>
     </footer>
   );

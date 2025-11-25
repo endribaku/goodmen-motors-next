@@ -37,7 +37,6 @@ export interface CarListing {
   fuelType?: 'petrol' | 'diesel' | 'hybrid' | 'electric' | 'other';
   driveType?: 'fwd' | 'rwd' | 'awd' | '4matic' | 'xdrive' | 'quattro';
   transmission?: 'automatic' | 'manual' | 'semi_automatic';
-  contactPhones?: string[];
 }
 
 const carListingFields = groq`
@@ -69,8 +68,7 @@ const carListingFields = groq`
   engineLayout,
   fuelType,
   driveType,
-  transmission,
-  contactPhones
+  transmission
 `;
 
 // Get featured cars (latest 6 cars in stock)

@@ -120,19 +120,6 @@ export default async function CarPage({ params }: CarPageProps) {
             <p className="text-gray-600 dark:text-gray-300">
               Contact our concierge team for detailed inspection reports, shipping quotes, or to reserve the vehicle.
             </p>
-            {car.contactPhones && car.contactPhones.length > 0 && (
-              <div className="flex flex-wrap gap-4">
-                {car.contactPhones.map((phone) => (
-                  <a
-                    key={phone}
-                    href={`tel:${phone.replace(/\s/g, '')}`}
-                    className="text-lg font-semibold text-amber-600 hover:text-amber-700 dark:text-amber-400"
-                  >
-                    {phone}
-                  </a>
-                ))}
-              </div>
-            )}
             <div className="flex flex-wrap gap-4">
               <Button asChild size="lg">
                 <Link href="/contact">Contact Concierge</Link>
