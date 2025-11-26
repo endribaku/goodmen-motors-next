@@ -29,18 +29,16 @@ export default function Footer() {
                 ))}
               </nav>
 
-              <div className="flex items-center gap-2 text-[#5B5B5B] headline text-[15px] tracking-[0.15em] underline decoration-dotted">
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="transition hover:text-white"
-                  aria-label="Instagram"
-                >
-                  <img src="/helper-icons/contact us/instagram.svg" alt="" className="" />
-                </a>
+              <a
+                href="https://www.instagram.com/goodmenmotors/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-[#5B5B5B] headline text-[15px] tracking-[0.15em] underline decoration-dotted transition hover:text-gray-400"
+                aria-label="Instagram"
+              >
+                <img src="/helper-icons/contact us/instagram.svg" alt="" className="" />
                 <span className="text-sm">INSTAGRAM</span>
-              </div>
+              </a>
             </div>
           </div>
           

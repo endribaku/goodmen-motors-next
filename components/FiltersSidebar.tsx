@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { MultiTagDropdown } from '@/components/ui/multi-tag-dropdown';
-import { cn } from '@/lib/utils';
+import { cn, translateFuelType } from '@/lib/utils';
 
 export interface FilterState {
   keyword: string;
@@ -332,6 +332,7 @@ export default function FiltersSidebar({
             options={fuelTypes}
             onChange={(values) => updateFilter('fuelTypes', values)}
             placeholder="Zgjidh karburantin"
+            formatLabel={translateFuelType}
           />
         </div>
 

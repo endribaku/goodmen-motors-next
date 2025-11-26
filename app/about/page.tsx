@@ -1,122 +1,101 @@
 import type { Metadata } from 'next';
-
-import SectionTitle from '@/components/SectionTitle';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-
+import HowItWorksSection from '@/components/HowItWorksSection';
 export const metadata: Metadata = {
-  title: 'About Us – Goodmen Motors',
+  title: 'Rreth Nesh – Goodmen Motors',
   description:
-    'Learn about Goodmen Motors: our experience importing vehicles from the USA and the transparent process we follow.',
+    'Goodmen Motors është partneri yt për importin e makinave nga Koreja e Jugut, SHBA dhe Kanada.',
 };
 
-const pillars = [
+const services = [
   {
-    title: 'Quality Assurance',
+    title: 'Blerje në ankande Copart & IAAI',
     description:
-      'Multi-point inspections, high-resolution imagery, and verified auction data accompany every import.',
+      'Jemi broker i licensuar në ankandet më të mëdha. Ne kërkojmë, verifikojmë dhe licitojmë për makinën që i përshtatet më mirë kërkesave të tua.',
   },
   {
-    title: 'Transparent Process',
+    title: 'Kontroll teknik & përgatitje për rrugë',
     description:
-      'We document every step, from bidding to shipping, so you understand exact costs and timelines.',
+      'Makina kontrollohet teknikisht para nisjes dhe pas mbërritjes, që të jetë e gatshme për rrugë dhe për regjistrim.',
   },
   {
-    title: 'Expert Network',
+    title: 'Transport ndërkombëtar detar & ajror',
     description:
-      'Licensed US buyers, logistics partners, and customs brokers streamline delivery into the Balkans.',
+      'Organizojmë transport të shpejtë dhe të sigurt me RO-RO ose konteiner, nga portet kryesore drejt Shqipërisë.',
   },
   {
-    title: 'Concierge Support',
+    title: 'Dokumentacion & asistencë',
     description:
-      'Personalized sourcing and constant communication, whether you need market advice or shipping updates.',
+      'Nga dokumentet e eksportit deri te dogana, ne e menaxhojmë procesin që ti të mos humbasësh kohë me letra.',
+  },
+];
+
+const howItWorks = [
+  {
+    icon: 'helper-icons/how-it-works/tabler-icon-car.svg',
+    title: 'Zgjedhja e makinës',
+    description: 'Na tregon çfarë kërkon - buxhet, markë, kilometrash, vit prodhimi.',
+  },
+  {
+    icon: 'helper-icons/how-it-works/tabler-icon-ship.svg',
+    title: 'Ankandi & transporti',
+    description: 'Ne gjejmë ofertën më të mirë, fitojmë ankandin dhe organizojmë transportin drejt Shqipërisë.',
+  },
+  {
+    icon: 'helper-icons/how-it-works/tabler-icon-key.svg',
+    title: 'Mbërritja në Shqipëri',
+    description: 'Makina mbërrin, kontrollohet, dhe e marrë dorë më dorë gati për rrugë.',
   },
 ];
 
 export default function AboutPage() {
   return (
-    <div className="space-y-12 pb-20">
-      <div className="mx-auto max-w-5xl px-4 pt-10 sm:px-6 lg:px-8">
-        <SectionTitle
-          alignment="left"
-          eyebrow="Who We Are"
-          title="Precision imports with transparency and trust"
-          subtitle="From sourcing at US auctions to delivering to your driveway, Goodmen Motors manages the complete lifecycle."
-        />
-
-        <Card className="mt-10 border-none bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 text-white">
-          <CardHeader>
-            <Badge variant="outline" className="border-white/30 text-white">
-              Since 2014
-            </Badge>
-            <CardTitle className="text-3xl text-white">
-              Our Experience Importing from the USA
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 text-white/80">
-            <p>
-              We built relationships with major US auction houses, independent inspectors, and freight
-              forwarders to make premium vehicles accessible in Albania, Kosovo, and North Macedonia.
-            </p>
-            <p>
-              From luxury sedans and SUVs to rare performance models, every car undergoes verification of
-              title, history, and mechanical condition before it ships overseas.
-            </p>
-          </CardContent>
-        </Card>
-
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Trust & Transparency</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-gray-600 dark:text-gray-400">
-              <p>
-                We believe informed clients make the best decisions. You receive inspection reports,
-                vehicle history, cost breakdowns, and shipping milestones in real time.
-              </p>
-              <p>
-                If a vehicle has blemishes, prior repairs, or pending recalls, we call them out before you
-                commit. No surprises post-delivery.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Inspection Process</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                <li>• On-site mechanical & cosmetic inspection</li>
-                <li>• ECU scans and fluid checks where possible</li>
-                <li>• Damage documentation with annotated photos</li>
-                <li>• Verification of options, VIN, and service campaigns</li>
-                <li>• Logistics planning with insurance coverage</li>
-              </ul>
-            </CardContent>
-          </Card>
+    <div className="bg-white">
+      {/* Hero Section */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="max-w-4xl">
+          <h1 className="text-[32px] font-normal michroma text-black">
+            Makina të përzgjedhura. Cilësi e garantuar.
+          </h1>
+          <p className="mt-3 headline font-light text-black text-[16px] ">
+            Goodmen Motors është partneri yt për importin e makinave nga Koreja e Jugut, SHBA dhe Kanada. Për
+            ne, çdo makinë është më shumë se mjet transporti - është pjesë e stilit tënd të jetesës. Ne
+            kujdesemi për çdo hap, nga ankandi deri te dorëzimi në Shqipëri.
+          </p>
         </div>
+      </section>
+      {/* Car Image - Full Width */}
+      <div className="w-full">
+        <img
+          src="/about/about-hero-banner.jpg"
+          alt="Premium imported vehicle"
+          className="h-auto w-full object-cover"
+        />
+      </div>
 
-        <section className="mt-14">
-          <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
-            Why choose Goodmen Motors?
-          </h3>
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
-            {pillars.map((pillar) => (
-              <Card key={pillar.title} className="border-gray-200/70 dark:border-gray-800/60">
-                <CardHeader>
-                  <CardTitle className="text-xl">{pillar.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="text-gray-600 dark:text-gray-400">
-                  {pillar.description}
-                </CardContent>
-              </Card>
+      {/* Services Section */}
+      <section className="bg-white py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            {services.map((service, index) => (
+              <div key={index} className="flex items-start gap-6">
+                {/* Blue Arrow Icon */}
+                <div className="shrink-0 mb-1">
+                  <img src="/helper-icons/about/tabler-icon-circle-arrow-right-filled.svg" alt="Arrow Icon" className="h-6 w-6" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-[18px] font-normal headline text-black mb-1">{service.title}</h3>
+                  <p className="headline font-light text-black text-[16px] leading-relaxed">
+                    {service.description}
+                  </p>
+                </div>
+              </div>
             ))}
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      
+      <HowItWorksSection showAboutButton={false} />
     </div>
   );
 }
-

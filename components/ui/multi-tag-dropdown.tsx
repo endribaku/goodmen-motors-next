@@ -11,6 +11,7 @@ interface MultiTagDropdownProps {
   onChange: (values: string[]) => void;
   placeholder?: string;
   disabled?: boolean;
+  formatLabel?: (value: string) => string;
 }
 
 export function MultiTagDropdown({
@@ -20,6 +21,7 @@ export function MultiTagDropdown({
   onChange,
   placeholder = 'Select options',
   disabled = false,
+  formatLabel: customFormatLabel,
 }: MultiTagDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -103,6 +105,9 @@ export function MultiTagDropdown({
   };
 
   const formatLabel = (value: string) => {
+    if (customFormatLabel) {
+      return customFormatLabel(value);
+    }
     return value
       .replace(/_/g, ' ')
       .replace(/\b\w/g, (char) => char.toUpperCase());
