@@ -71,7 +71,7 @@ export default function Filters({ makes }: FiltersProps) {
           <select
             value={filters.make}
             onChange={(e) => handleChange('make', e.target.value)}
-            className="h-11 rounded-2xl border border-gray-200 bg-white/90 px-4 text-sm font-medium text-gray-700 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 dark:border-gray-800 dark:bg-gray-900/80 dark:text-gray-100"
+            className="h-11 rounded-2xl border border-gray-200 bg-white/90 px-4 text-sm font-medium text-gray-700  focus-visible:outline-none focus-visible:ring-2 dark:border-gray-800 dark:bg-gray-900/80 dark:text-gray-100"
           >
             <option value="">All Makes</option>
             {makes.map((make) => (

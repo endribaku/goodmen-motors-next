@@ -25,36 +25,39 @@ export default function ImageGallery({ car }: ImageGalleryProps) {
     );
   }
 
-  const currentImage = urlFor(images[currentIndex]).width(1600).height(1000).url();
+  const currentImage = urlFor(images[currentIndex]).width(2000).height(1500).url();
 
   return (
     <div className="space-y-4">
-      <Card className="relative aspect-[16/10] overflow-hidden border-none p-0">
+      {/* Main Image */}
+      <div className="relative aspect-4/3 w-full overflow-hidden rounded-lg bg-gray-100 min-h-[500px]">
         <Image
           src={currentImage}
           alt={images[currentIndex].alt || car.title}
           fill
-          sizes="(max-width: 1024px) 100vw, 50vw"
+          sizes="(max-width: 1024px) 100vw, 60vw"
           className="object-cover"
         />
-      </Card>
+      </div>
+      {/* Thumbnails */}
       {images.length > 1 && (
         <div className="grid grid-cols-4 gap-3">
-          {images.map((image, index) => (
+          {images.slice(0, 4).map((image, index) => (
             <button
               type="button"
               key={`${image.asset?._ref}-${index}`}
               onClick={() => setCurrentIndex(index)}
-              className={`relative aspect-[4/3] overflow-hidden rounded-2xl border ${
+              className={`relative aspect-4/3 overflow-hidden rounded-lg transition-opacity ${
                 currentIndex === index
-                  ? 'border-amber-500 ring-2 ring-amber-500'
-                  : 'border-transparent opacity-70 hover:opacity-100'
+                  ? 'opacity-100'
+                  : 'opacity-70 hover:opacity-100'
               }`}
             >
               <Image
                 src={urlFor(image).width(400).height(300).url()}
                 alt={image.alt || `${car.title} thumbnail ${index + 1}`}
                 fill
+                sizes="(max-width: 1024px) 25vw, 12.5vw"
                 className="object-cover"
               />
             </button>

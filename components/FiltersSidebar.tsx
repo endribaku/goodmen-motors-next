@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { MultiTagDropdown } from '@/components/ui/multi-tag-dropdown';
@@ -10,7 +9,7 @@ import { cn } from '@/lib/utils';
 
 export interface FilterState {
   keyword: string;
-  make: string;
+  makes: string[];
   models: string[];
   minPrice: string;
   maxPrice: string;
@@ -43,7 +42,8 @@ export default function FiltersSidebar({
 
   const [filters, setFilters] = useState<FilterState>({
     keyword: searchParams.get('keyword') || '',
-    make: searchParams.get('make') || '',
+    makes: searchParams.get('makes')?.split(',').filter(Boolean) || 
+           (searchParams.get('make') ? [searchParams.get('make')!] : []), // Support old 'make' param for backward compatibility
     models: searchParams.get('models')?.split(',').filter(Boolean) || [],
     minPrice: searchParams.get('minPrice') || '',
     maxPrice: searchParams.get('maxPrice') || '',
@@ -59,13 +59,15 @@ export default function FiltersSidebar({
   );
 
   const [availableModels, setAvailableModels] = useState<string[]>([]);
+  const isInitialMount = useRef(true);
 
-  // Fetch models when make changes
+  // Fetch models when makes change
   useEffect(() => {
-    async function fetchModelsByMake() {
-      if (filters.make) {
+    async function fetchModelsByMakes() {
+      if (filters.makes.length > 0) {
         try {
-          const response = await fetch(`/api/models?make=${encodeURIComponent(filters.make)}`);
+          const makesParam = filters.makes.map(m => encodeURIComponent(m)).join(',');
+          const response = await fetch(`/api/models?makes=${makesParam}`);
           const data = await response.json();
           setAvailableModels(data.models || []);
         } catch (error) {
@@ -77,8 +79,13 @@ export default function FiltersSidebar({
       }
     }
 
-    fetchModelsByMake();
-  }, [filters.make]);
+    fetchModelsByMakes();
+  }, [filters.makes]);
+
+  // Mark initial mount as complete after first render
+  useEffect(() => {
+    isInitialMount.current = false;
+  }, []);
 
   const toggleGroup = (group: string) => {
     setExpandedGroups((prev) => {
@@ -98,19 +105,33 @@ export default function FiltersSidebar({
   ) => {
     setFilters((prev) => {
       const next = { ...prev, [key]: value };
-      // Clear models when make changes
-      if (key === 'make' && value !== prev.make) {
-        next.models = [];
+      // Clear models when makes change
+      if (key === 'makes') {
+        const prevMakes = prev.makes || [];
+        const newMakes = value as string[];
+        // Check if makes actually changed
+        if (prevMakes.length !== newMakes.length || 
+            !prevMakes.every((make, idx) => make === newMakes[idx])) {
+          next.models = [];
+        }
       }
       return next;
     });
   };
 
-  const applyFilters = () => {
+  // Helper function to build URL params from current filters
+  const buildURLParams = () => {
     const params = new URLSearchParams();
 
+    // Preserve sort and pageSize
+    const currentSort = searchParams.get('sort');
+    const currentPageSize = searchParams.get('pageSize');
+    if (currentSort) params.set('sort', currentSort);
+    if (currentPageSize) params.set('pageSize', currentPageSize);
+
+    // Add filters
     if (filters.keyword) params.set('keyword', filters.keyword);
-    if (filters.make) params.set('make', filters.make);
+    if (filters.makes.length > 0) params.set('makes', filters.makes.join(','));
     if (filters.models.length > 0) params.set('models', filters.models.join(','));
     if (filters.minPrice) params.set('minPrice', filters.minPrice);
     if (filters.maxPrice) params.set('maxPrice', filters.maxPrice);
@@ -121,6 +142,39 @@ export default function FiltersSidebar({
     if (filters.transmissions.length > 0)
       params.set('transmissions', filters.transmissions.join(','));
 
+    // Reset to page 1 when filters change
+    params.set('page', '1');
+
+    return params;
+  };
+
+  // Auto-apply filters when dropdown selections change (immediate)
+  useEffect(() => {
+    // Skip on initial mount
+    if (isInitialMount.current) return;
+
+    const params = buildURLParams();
+    router.push(`/listings?${params.toString()}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.makes, filters.models, filters.fuelTypes, filters.driveTypes, filters.transmissions]);
+
+  // Auto-apply filters for text inputs with debounce
+  useEffect(() => {
+    // Skip on initial mount
+    if (isInitialMount.current) return;
+
+    const timer = setTimeout(() => {
+      const params = buildURLParams();
+      router.push(`/listings?${params.toString()}`);
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.minPrice, filters.maxPrice, filters.minMileage, filters.maxMileage, filters.keyword]);
+
+  const applyFilters = () => {
+    // Filters are now auto-applied, but keep this for manual trigger if needed
+    const params = buildURLParams();
     router.push(`/listings?${params.toString()}`);
     // Close mobile drawer after applying
     if (onClose) onClose();
@@ -129,7 +183,7 @@ export default function FiltersSidebar({
   const clearFilters = () => {
     setFilters({
       keyword: '',
-      make: '',
+      makes: [],
       models: [],
       minPrice: '',
       maxPrice: '',
@@ -144,7 +198,7 @@ export default function FiltersSidebar({
 
   const hasActiveFilters =
     filters.keyword ||
-    filters.make ||
+    filters.makes.length > 0 ||
     filters.models.length > 0 ||
     filters.minPrice ||
     filters.maxPrice ||
@@ -154,242 +208,156 @@ export default function FiltersSidebar({
     filters.driveTypes.length > 0 ||
     filters.transmissions.length > 0;
 
+  const sortOrder = searchParams.get('sort') || 'latest';
+
+  const handleSortChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value === 'latest') {
+      params.delete('sort');
+    } else {
+      params.set('sort', value);
+    }
+    router.push(`/listings?${params.toString()}`);
+  };
+
   const sidebarContent = (
-    <Card className="h-full border-gray-200/80 bg-white/95 backdrop-blur dark:border-gray-800/70 dark:bg-gray-950/95">
-      <CardHeader className="sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur dark:border-gray-800 dark:bg-gray-950/95">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold">Refine Search</CardTitle>
-          {onClose && (
-            <button
-              onClick={onClose}
-              className="rounded-lg p-1 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 lg:hidden"
-              aria-label="Close filters"
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          )}
-          {hasActiveFilters && (
-            <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs">
-              Clear All
-            </Button>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent className="overflow-y-auto p-6">
-        <div className="space-y-6">
-          {/* GROUP 1: Search */}
-          <div className="space-y-3">
-            <button
-              type="button"
-              onClick={() => toggleGroup('search')}
-              className="flex w-full items-center justify-between text-left"
-            >
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Search</h3>
-              <svg
-                className={cn(
-                  'h-4 w-4 text-gray-500 transition-transform',
-                  expandedGroups.has('search') && 'rotate-180',
-                )}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {expandedGroups.has('search') && (
-              <div>
-                <Input
-                  type="text"
-                  placeholder="Search by keyword..."
-                  value={filters.keyword}
-                  onChange={(e) => updateFilter('keyword', e.target.value)}
-                />
-              </div>
-            )}
-          </div>
+    <div className="h-full rounded-lg border border-gray-200 bg-white p-6">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-lg font-medium text-gray-900">Filtro</h2>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="rounded-lg p-1 text-gray-500 hover:bg-gray-100 lg:hidden"
+            aria-label="Close filters"
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
+      </div>
 
-          {/* GROUP 2: Vehicle Basics */}
-          <div className="space-y-3 border-t border-gray-200 pt-4 dark:border-gray-800">
-            <button
-              type="button"
-              onClick={() => toggleGroup('basics')}
-              className="flex w-full items-center justify-between text-left"
+      <div className="space-y-5">
+        {/* Sorting Dropdown */}
+        <div>
+          <label className="mb-2 block text-sm font-medium text-gray-700">Renditja</label>
+          <div className="relative">
+            <select
+              value={sortOrder}
+              onChange={(e) => handleSortChange(e.target.value)}
+              className="h-11 w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 pr-10 text-sm text-gray-700 focus:border-gray-400 focus:outline-none"
             >
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Vehicle Basics</h3>
-              <svg
-                className={cn(
-                  'h-4 w-4 text-gray-500 transition-transform',
-                  expandedGroups.has('basics') && 'rotate-180',
-                )}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {expandedGroups.has('basics') && (
-              <div className="space-y-4">
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Make
-                  </label>
-                  <select
-                    value={filters.make}
-                    onChange={(e) => updateFilter('make', e.target.value)}
-                    className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100"
-                  >
-                    <option value="">All Makes</option>
-                    {makes.map((make) => (
-                      <option key={make} value={make}>
-                        {make}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <MultiTagDropdown
-                  label="Model"
-                  selected={filters.models}
-                  options={availableModels}
-                  onChange={(values) => updateFilter('models', values)}
-                  placeholder="Select models"
-                  disabled={!filters.make}
-                />
-              </div>
-            )}
-          </div>
-
-          {/* GROUP 3: Price & Mileage */}
-          <div className="space-y-3 border-t border-gray-200 pt-4 dark:border-gray-800">
-            <button
-              type="button"
-              onClick={() => toggleGroup('price')}
-              className="flex w-full items-center justify-between text-left"
-            >
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                Price & Mileage
-              </h3>
-              <svg
-                className={cn(
-                  'h-4 w-4 text-gray-500 transition-transform',
-                  expandedGroups.has('price') && 'rotate-180',
-                )}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {expandedGroups.has('price') && (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Min Price (€)
-                  </label>
-                  <Input
-                    type="number"
-                    placeholder="Min"
-                    value={filters.minPrice}
-                    onChange={(e) => updateFilter('minPrice', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Max Price (€)
-                  </label>
-                  <Input
-                    type="number"
-                    placeholder="Max"
-                    value={filters.maxPrice}
-                    onChange={(e) => updateFilter('maxPrice', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Min Mileage
-                  </label>
-                  <Input
-                    type="number"
-                    placeholder="Min"
-                    value={filters.minMileage}
-                    onChange={(e) => updateFilter('minMileage', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Max Mileage
-                  </label>
-                  <Input
-                    type="number"
-                    placeholder="Max"
-                    value={filters.maxMileage}
-                    onChange={(e) => updateFilter('maxMileage', e.target.value)}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* GROUP 4: Powertrain */}
-          <div className="space-y-3 border-t border-gray-200 pt-4 dark:border-gray-800">
-            <button
-              type="button"
-              onClick={() => toggleGroup('powertrain')}
-              className="flex w-full items-center justify-between text-left"
-            >
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Powertrain</h3>
-              <svg
-                className={cn(
-                  'h-4 w-4 text-gray-500 transition-transform',
-                  expandedGroups.has('powertrain') && 'rotate-180',
-                )}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {expandedGroups.has('powertrain') && (
-              <div className="space-y-4">
-                <MultiTagDropdown
-                  label="Fuel Type"
-                  selected={filters.fuelTypes}
-                  options={fuelTypes}
-                  onChange={(values) => updateFilter('fuelTypes', values)}
-                  placeholder="Select fuel types"
-                />
-                <MultiTagDropdown
-                  label="Drive Type"
-                  selected={filters.driveTypes}
-                  options={driveTypes}
-                  onChange={(values) => updateFilter('driveTypes', values)}
-                  placeholder="Select drive types"
-                />
-                <MultiTagDropdown
-                  label="Transmission"
-                  selected={filters.transmissions}
-                  options={transmissions}
-                  onChange={(values) => updateFilter('transmissions', values)}
-                  placeholder="Select transmissions"
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Apply Button */}
-          <div className="sticky bottom-0 border-t border-gray-200 bg-white pt-4 dark:border-gray-800 dark:bg-gray-950">
-            <Button onClick={applyFilters} className="w-full" size="lg">
-              Apply Filters
-            </Button>
+              <option value="latest">Të fundit</option>
+              <option value="price_asc">Çmimi: Nga më i ulët</option>
+              <option value="price_desc">Çmimi: Nga më i lartë</option>
+              <option value="year_desc">Viti: Nga më i ri</option>
+              <option value="year_asc">Viti: Nga më i vjetër</option>
+            </select>
+            <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
+              <img src="/helper-icons/listings/Icon/chevron-down.svg" alt="Arrow Down" className="w-4 h-4" />
+            </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Marka */}
+        <div>
+          <MultiTagDropdown
+            label="Marka"
+            selected={filters.makes}
+            options={makes}
+            onChange={(values) => updateFilter('makes', values)}
+            placeholder="Zgjidh markën"
+          />
+        </div>
+
+        {/* Modeli */}
+        <div>
+          <MultiTagDropdown
+            label="Modeli"
+            selected={filters.models}
+            options={availableModels}
+            onChange={(values) => updateFilter('models', values)}
+            placeholder="Zgjidh modelin"
+            disabled={filters.makes.length === 0}
+          />
+        </div>
+
+        {/* Çmimi */}
+        <div>
+          <label className="mb-2 block text-sm font-medium text-gray-700">Çmimi</label>
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              type="number"
+              placeholder="Nga"
+              value={filters.minPrice}
+              onChange={(e) => updateFilter('minPrice', e.target.value)}
+              className="h-11 rounded-lg border-gray-300 bg-white focus:border-gray-400"
+            />
+            <Input
+              type="number"
+              placeholder="Deri"
+              value={filters.maxPrice}
+              onChange={(e) => updateFilter('maxPrice', e.target.value)}
+              className="h-11 rounded-lg border-gray-300 bg-white focus:border-gray-400"
+            />
+          </div>
+        </div>
+
+        {/* Kilometrazhi */}
+        <div>
+          <label className="mb-2 block text-sm font-medium">Kilometrazhi</label>
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              type="number"
+              placeholder="Nga"
+              value={filters.minMileage}
+              onChange={(e) => updateFilter('minMileage', e.target.value)}
+              className="h-11 rounded-lg border-gray-300 focus:border-gray-400 bg-white text-black"
+            />
+            <Input
+              type="number"
+              placeholder="Deri"
+              value={filters.maxMileage}
+              onChange={(e) => updateFilter('maxMileage', e.target.value)}
+              className="h-11 rounded-lg border-gray-300 bg-white focus:border-gray-400 text-black"
+            />
+          </div>
+        </div>
+
+        {/* Karburanti */}
+        <div>
+          <MultiTagDropdown
+            label="Karburanti"
+            selected={filters.fuelTypes}
+            options={fuelTypes}
+            onChange={(values) => updateFilter('fuelTypes', values)}
+            placeholder="Zgjidh karburantin"
+          />
+        </div>
+
+        {/* Transmisioni */}
+        <div>
+          <MultiTagDropdown
+            label="Transmisioni"
+            selected={filters.transmissions}
+            options={transmissions}
+            onChange={(values) => updateFilter('transmissions', values)}
+            placeholder="Zgjidh transmisionin"
+          />
+        </div>
+
+        {/* Apply Button */}
+        <Button onClick={applyFilters} className="w-full bg-[#0044FF] border border-gray-300 text-white headline hover:bg-[#0044FF]/80" size="lg">
+          Apliko Filtra
+        </Button>
+
+        {hasActiveFilters && (
+          <Button onClick={clearFilters} className="w-full bg-white text-black hover:bg-gray-50 border-gray-300 shadow-none headline" size="sm">
+            Pastro Filtra
+          </Button>
+        )}
+      </div>
+    </div>
   );
 
   return (

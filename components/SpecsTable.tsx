@@ -12,8 +12,7 @@ const rows = (car: CarListing) => [
   {
     label: 'Mileage',
     value: car.mileage
-      ? new Intl.NumberFormat('en-US').format(car.mileage) +
-        ` ${car.mileageUnit === 'km' ? 'km' : 'mi'}`
+      ? `${new Intl.NumberFormat('en-US').format(car.mileage)}mi`
       : 'N/A',
   },
   { label: 'Engine', value: car.engineDisplacement ? `${car.engineDisplacement}L ${car.engineLayout || ''}` : 'N/A' },

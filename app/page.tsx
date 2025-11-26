@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { fetchLatestArrivals } from '@/sanity/queries';
-import CarGrid from '@/components/CarGrid';
+import HomeCarGrid from '@/components/HomeCarGrid';
 
 export const metadata: Metadata = {
   title: 'Goodmen Motors – Premium Imported Vehicles from USA',
@@ -52,7 +52,7 @@ export default async function Home() {
               </Link>
             </div>
             <div className="mt-10">
-              <CarGrid cars={latestArrivals.slice(0, 4)} />
+              <HomeCarGrid cars={latestArrivals.slice(0, 4)} />
             </div>
           </div>
         </section>
@@ -116,7 +116,7 @@ export default async function Home() {
 
 
       {/* Contact Section */}
-      <section className="bg-gray-50 py-20">
+      <section className="bg-white py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="mb-1 text-[24px] font-normal text-black michroma">Na kontaktoni</h2>
           <div className="grid gap-12 lg:grid-cols-2">
@@ -173,7 +173,7 @@ export default async function Home() {
             </div>
             <div className="h-96 w-full overflow-hidden rounded-lg bg-gray-200">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2996.0!2d19.8!3d41.3!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDHCsDE4JzAwLjAiTiAxOcKwNDgnMDAuMCJF!5e0!3m2!1sen!2s!4v1234567890"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1676.2473300529248!2d19.81517398799004!3d41.31270496479977!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x135030fbbd7fa2c1%3A0x881f31e7ab1079aa!2sRruga%20e%20Kosovar%C3%ABve!5e1!3m2!1sen!2s!4v1764098225221!5m2!1sen!2s"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}

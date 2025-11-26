@@ -163,24 +163,10 @@ export const carType = defineType({
         }),
         defineField({
             name: 'mileage',
-            title: 'Mileage',
+            title: 'Mileage (mi)',
             type: 'number',
             description: 'Total mileage, e.g. 141526',
         }),
-        defineField({
-            name: 'mileageUnit',
-            title: 'Mileage unit',
-            type: 'string',
-            initialValue: 'miles',
-            options: {
-                list: [
-                    {title: 'Kilometers', value: 'km'},
-                    {title: 'Miles', value: 'miles'},
-                ],
-                layout: 'radio',
-            },
-        }),
-
         // Engine & drivetrain
         defineField({
             name: 'engineDisplacement',
@@ -292,7 +278,7 @@ export const carType = defineType({
             title: 'Delivery regions',
             type: 'array',
             of: [{type: 'string'}],
-            description: 'p.sh. Shqipëri, Kosovë, Maqedoni',
+            description: 'p.sh. Shqipëri, Kosovë',
             options: {
                 list: [
                     {title: 'Albania', value: 'Albania'},

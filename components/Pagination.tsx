@@ -113,7 +113,7 @@ export default function Pagination({
             const newSize = Number(e.target.value);
             handlePageSizeChange(newSize);
           }}
-          className="h-9 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100"
+          className="h-9 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100"
         >
           {pageSizeOptions.map((size) => (
             <option key={size} value={size}>
@@ -157,7 +157,7 @@ export default function Pagination({
                 onClick={() => goToPage(pageNum)}
                 className={cn(
                   'h-9 min-w-[36px]',
-                  currentPage === pageNum && 'bg-amber-600 text-white hover:bg-amber-700',
+                  currentPage === pageNum && 'bg-gray-900 text-white hover:bg-gray-800',
                 )}
               >
                 {pageNum}

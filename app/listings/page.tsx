@@ -11,9 +11,6 @@ import {
 } from '@/sanity/queries';
 import FiltersSidebar from '@/components/FiltersSidebar';
 import CarGrid from '@/components/CarGrid';
-import SectionTitle from '@/components/SectionTitle';
-import { Card } from '@/components/ui/card';
-import FiltersButton from '@/components/FiltersButton';
 import Pagination from '@/components/Pagination';
 
 export const metadata: Metadata = {
@@ -32,8 +29,9 @@ const sanitizeOptions = (values?: (string | null)[]) =>
   );
 
 export default async function ListingsPage({ searchParams }: ListingsPageProps) {
+  const searchParam = await searchParams;
   const search = Object.fromEntries(
-    Object.entries(searchParams)
+    Object.entries(searchParam)
       .filter(([, value]) => typeof value === 'string')
       .map(([key, value]) => [key, value as string]),
   );
@@ -43,11 +41,13 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
   const pageSize = Number(search.pageSize) || 24;
   const validPageSizes = [12, 24, 48, 96];
   const validPageSize = validPageSizes.includes(pageSize) ? pageSize : 24;
+  const sort = search.sort || 'latest';
 
   // Parse filter state from search params
   const filters = {
     keyword: search.keyword,
-    make: search.make,
+    makes: search.makes?.split(',').filter(Boolean) || 
+           (search.make ? [search.make] : []), // Support old 'make' param for backward compatibility
     models: search.models?.split(',').filter(Boolean),
     minPrice: search.minPrice ? Number(search.minPrice) : undefined,
     maxPrice: search.maxPrice ? Number(search.maxPrice) : undefined,
@@ -66,12 +66,31 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
   // Fetch all filter options, cars, and total count in parallel
   const [cars, totalCount, makes, fuelTypes, driveTypes, transmissions] = await Promise.all([
     hasFilters
-      ? fetchCarsByFilters(filters, { page, pageSize: validPageSize })
+      ? fetchCarsByFilters(filters, { page, pageSize: validPageSize, sort })
       : fetchAllCars().then((allCars) => {
-          // Apply pagination to all cars if no filters
+          // Apply sorting and pagination to all cars if no filters
+          let sortedCars = [...allCars];
+          switch (sort) {
+            case 'price_asc':
+              sortedCars.sort((a, b) => a.price - b.price);
+              break;
+            case 'price_desc':
+              sortedCars.sort((a, b) => b.price - a.price);
+              break;
+            case 'year_desc':
+              sortedCars.sort((a, b) => b.year - a.year);
+              break;
+            case 'year_asc':
+              sortedCars.sort((a, b) => a.year - b.year);
+              break;
+            case 'latest':
+            default:
+              sortedCars.sort((a, b) => new Date(b._createdAt).getTime() - new Date(a._createdAt).getTime());
+              break;
+          }
           const start = (page - 1) * validPageSize;
           const end = start + validPageSize;
-          return allCars.slice(start, end);
+          return sortedCars.slice(start, end);
         }),
     hasFilters
       ? fetchCarsCountByFilters(filters)
@@ -90,15 +109,12 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
   const sanitizedTransmissions = sanitizeOptions(transmissions);
 
   return (
-    <div className="pb-16">
+    <div className="min-h-screen pb-16 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionTitle
-          title="Available Inventory"
-          subtitle={`${cars.length} vehicle${cars.length === 1 ? '' : 's'} ready to import`}
-          eyebrow="Full Collection"
-          alignment="left"
-          className="mb-8"
-        />
+        {/* Page Title */}
+        <h1 className="mb-24 mt-24 text-center text-3xl font-light tracking-wide text-black michroma">
+          Zgjidh makinën tënde
+        </h1>
 
         <div className="flex gap-6">
           {/* Desktop Sidebar */}
@@ -113,22 +129,21 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
 
           {/* Main Content Area */}
           <main className="flex-1 min-w-0">
-            <Card className="border-none bg-white/95 p-8 shadow-2xl shadow-amber-100/40 dark:bg-gray-950">
-              <CarGrid cars={cars} />
-              
-              {totalCount > 0 && (
+            <CarGrid cars={cars} />
+            
+            {totalCount > 0 && (
+              <div className="mt-8">
                 <Pagination
                   currentPage={page}
                   totalPages={totalPages}
                   totalItems={totalCount}
                   pageSize={validPageSize}
                 />
-              )}
-            </Card>
+              </div>
+            )}
           </main>
         </div>
       </div>
-
     </div>
   );
 }
