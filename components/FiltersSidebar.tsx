@@ -172,14 +172,6 @@ export default function FiltersSidebar({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.minPrice, filters.maxPrice, filters.minMileage, filters.maxMileage, filters.keyword]);
 
-  const applyFilters = () => {
-    // Filters are now auto-applied, but keep this for manual trigger if needed
-    const params = buildURLParams();
-    router.push(`/listings?${params.toString()}`);
-    // Close mobile drawer after applying
-    if (onClose) onClose();
-  };
-
   const clearFilters = () => {
     setFilters({
       keyword: '',
@@ -346,11 +338,6 @@ export default function FiltersSidebar({
             placeholder="Zgjidh transmisionin"
           />
         </div>
-
-        {/* Apply Button */}
-        <Button onClick={applyFilters} className="w-full bg-[#0044FF] border border-gray-300 text-white headline hover:bg-[#0044FF]/80" size="lg">
-          Apliko Filtra
-        </Button>
 
         {hasActiveFilters && (
           <Button onClick={clearFilters} className="w-full bg-white text-black hover:bg-gray-50 border-gray-300 shadow-none headline" size="sm">
