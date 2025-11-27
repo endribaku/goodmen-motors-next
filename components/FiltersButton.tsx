@@ -26,7 +26,7 @@ export default function FiltersButton({
         <Button
           onClick={() => setIsOpen(true)}
           size="lg"
-          className="h-14 rounded-full shadow-lg"
+          className="h-14 rounded-full shadow-lg border-none bg-[#0044FF] hover:bg-[#0044FF]/90 text-white transition hover:translate-y-[-5px] duration-500 pointer-coarse"
         >
           <svg
             className="mr-2 h-5 w-5"
@@ -46,14 +46,16 @@ export default function FiltersButton({
       </div>
 
       {/* Mobile Drawer */}
-      <FiltersSidebar
-        makes={makes}
-        fuelTypes={fuelTypes}
-        driveTypes={driveTypes}
-        transmissions={transmissions}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-      />
+      <div className="lg:hidden">
+        <FiltersSidebar
+          makes={makes}
+          fuelTypes={fuelTypes}
+          driveTypes={driveTypes}
+          transmissions={transmissions}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+        />
+      </div>
     </>
   );
 }

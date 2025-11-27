@@ -10,6 +10,7 @@ import {
   fetchCarsCountByFilters,
 } from '@/sanity/queries';
 import FiltersSidebar from '@/components/FiltersSidebar';
+import FiltersButton from '@/components/FiltersButton';
 import CarGrid from '@/components/CarGrid';
 import Pagination from '@/components/Pagination';
 
@@ -130,6 +131,7 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
           {/* Main Content Area */}
           <main className="flex-1 min-w-0">
             <CarGrid cars={cars} />
+
             
             {totalCount > 0 && (
               <div className="mt-8">
@@ -144,6 +146,14 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
           </main>
         </div>
       </div>
+
+      {/* Mobile Filters Button */}
+      <FiltersButton
+        makes={sanitizedMakes}
+        fuelTypes={sanitizedFuelTypes}
+        driveTypes={sanitizedDriveTypes}
+        transmissions={sanitizedTransmissions}
+      />
     </div>
   );
 }
