@@ -30,6 +30,7 @@ const sanitizeOptions = (values?: (string | null)[]) =>
   );
 
 export default async function ListingsPage({ searchParams }: ListingsPageProps) {
+
   const searchParam = await searchParams;
   const search = Object.fromEntries(
     Object.entries(searchParam)
@@ -39,10 +40,11 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
 
   // Parse pagination params
   const page = Math.max(1, Number(search.page) || 1);
-  const pageSize = Number(search.pageSize) || 24;
+  const pageSize = Number(search.pageSize) || 12;
   const validPageSizes = [12, 24, 48, 96];
   const validPageSize = validPageSizes.includes(pageSize) ? pageSize : 24;
   const sort = search.sort || 'latest';
+
 
   // Parse filter state from search params
   const filters = {

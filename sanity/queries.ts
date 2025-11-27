@@ -292,7 +292,12 @@ export async function fetchAllCars(): Promise<CarListing[]> {
 }
 
 export async function fetchLatestArrivals(): Promise<CarListing[]> {
-  return client.fetch<CarListing[]>(getLatestArrivals);
+  try {
+    return await client.fetch<CarListing[]>(getLatestArrivals);
+  } catch (error) {
+    console.error('Error fetching latest arrivals:', error);
+    return [];
+  }
 }
 
 export async function fetchCarBySlug(slug: string): Promise<CarListing | null> {

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
-import { fetchLatestArrivals } from '@/sanity/queries';
+import { fetchAllCars } from '@/sanity/queries';
 import HomeCarGrid from '@/components/HomeCarGrid';
 import ContactSection from '@/components/ContactSection';
 import HowItWorksSection from '@/components/HowItWorksSection';
@@ -13,7 +13,9 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const latestArrivals = await fetchLatestArrivals();
+  // Use fetchAllCars and slice to ensure consistency with listings page
+  const allCars = await fetchAllCars();
+  const latestArrivals = allCars.slice(0, 8);
 
   return (
     <div className="bg-white">

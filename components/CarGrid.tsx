@@ -6,7 +6,6 @@ interface CarGridProps {
 }
 
 export default function CarGrid({ cars }: CarGridProps) {
-  console.log(cars);
   if (cars.length === 0) {
     return (
       <div className="text-gray-500 headline font-light text-center text-[16px]">
