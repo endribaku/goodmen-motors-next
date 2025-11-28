@@ -9,7 +9,7 @@ export default function HowItWorksSection({ showAboutButton = true }: HowItWorks
     {
       icon: '/helper-icons/how-it-works/tabler-icon-car.svg',
       title: 'Zgjedhja e makinës',
-      description: 'Na tregon çfarë kërkon - buxhet, markë, kilometrash, vit prodhimi.',
+      description: 'Na tregon çfarë kërkon – buxhet, markë, kilometrash, vit prodhimi.',
     },
     {
       icon: '/helper-icons/how-it-works/tabler-icon-ship.svg',
@@ -20,7 +20,7 @@ export default function HowItWorksSection({ showAboutButton = true }: HowItWorks
     {
       icon: '/helper-icons/how-it-works/tabler-icon-key.svg',
       title: 'Mbërritja në Shqipëri',
-      description: 'Makina mbërrin, kontrollohet, dhe e marrë dorë më dorë gati për rrugë.',
+      description: 'Ne përmbushim të gjitha proçedurat doganore, dhe dorëzojmë makinën tek ju.',
     },
   ];
 

@@ -39,10 +39,7 @@ export default function Navbar() {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-4 md:flex">
-            <img src="/helper-icons/navbar/tabler-icon-world-longitude.svg" alt="" className="" />
-            <img src="/helper-icons/navbar/AL - Albania.svg" alt="" className="" />
-          </div>
+        
         </div>
         
 

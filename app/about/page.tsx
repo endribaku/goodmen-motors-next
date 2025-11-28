@@ -8,44 +8,37 @@ export const metadata: Metadata = {
 
 const services = [
   {
-    title: 'Blerje në ankande Copart & IAAI',
+    title: 'Zgjidh makinën tënde të ëndrrave',
     description:
-      'Jemi broker i licensuar në ankandet më të mëdha. Ne kërkojmë, verifikojmë dhe licitojmë për makinën që i përshtatet më mirë kërkesave të tua.',
+      'Të ndihmojmë të zgjedhësh makinën brenda buxhetit, duke gjetur ofertën më të mirë, duke shpjeguar dëmtimet, dhe duke llogaritur çmimin final.',
   },
   {
-    title: 'Kontroll teknik & përgatitje për rrugë',
+    title: 'Blerje në ankande Copart, IAAI dhe të tjera',
     description:
-      'Makina kontrollohet teknikisht para nisjes dhe pas mbërritjes, që të jetë e gatshme për rrugë dhe për regjistrim.',
+      'Jemi broker i licensuar në ankandet më të mëdha. Ne kërkojmë, verifikojmë dhe fitojmë ankandin për makinën që i përshtatet më mirë kërkesave të tua.',
   },
   {
-    title: 'Transport ndërkombëtar detar & ajror',
+    title: 'Transport i sigurtë',
     description:
-      'Organizojmë transport të shpejtë dhe të sigurt me RO-RO ose konteiner, nga portet kryesore drejt Shqipërisë.',
+      'Organizojmë ngarkimin, transportin detar (RO-RO ose konteiner) dhe mbërritjen në port, duke punuar me partnerë të specializuar logjistike.',
   },
   {
-    title: 'Dokumentacion & asistencë',
+    title: 'Dokumentacion & asistencë gjatë procesit',
     description:
-      'Nga dokumentet e eksportit deri te dogana, ne e menaxhojmë procesin që ti të mos humbasësh kohë me letra.',
+      'Të informojmë për kostot, afatet dhe hapat kryesorë, që të kesh transparencë të plotë nga porosia deri në mbërritjen e makinës.',
   },
 ];
 
-const howItWorks = [
-  {
-    icon: 'helper-icons/how-it-works/tabler-icon-car.svg',
-    title: 'Zgjedhja e makinës',
-    description: 'Na tregon çfarë kërkon - buxhet, markë, kilometrash, vit prodhimi.',
-  },
-  {
-    icon: 'helper-icons/how-it-works/tabler-icon-ship.svg',
-    title: 'Ankandi & transporti',
-    description: 'Ne gjejmë ofertën më të mirë, fitojmë ankandin dhe organizojmë transportin drejt Shqipërisë.',
-  },
-  {
-    icon: 'helper-icons/how-it-works/tabler-icon-key.svg',
-    title: 'Mbërritja në Shqipëri',
-    description: 'Makina mbërrin, kontrollohet, dhe e marrë dorë më dorë gati për rrugë.',
-  },
+const licenseLogos = [
+  { src: '/brand/licenses/copart.svg', alt: 'Copart' },
+  { src: '/brand/licenses/a.svg', alt: 'A' },
+  { src: '/brand/licenses/manheim.svg', alt: 'Manheim' },
+  { src: '/brand/licenses/adesa.svg', alt: 'ADESA' },
+  { src: '/brand/licenses/acv.svg', alt: 'ACV' },
+  { src: '/brand/licenses/block.svg', alt: 'Block' },
+  { src: '/brand/licenses/openlane.svg', alt: 'OPENLANE' },
 ];
+
 
 export default function AboutPage() {
   return (
@@ -90,6 +83,26 @@ export default function AboutPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Licensed Broker Section */}
+        <div className="mt-24">
+          <h2 className="text-center text-[24px] font-normal michroma text-black mb-12">
+            Ne jemi broker të liçensuar në:
+          </h2>
+          <div className="mx-auto max-w-6xl">
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-12 md:flex-nowrap md:gap-x-9 md:gap-y-2 mb-12">
+            {licenseLogos.map((logo, index) => (
+              <div key={index} className="w-[calc(50%-12px)] md:w-auto flex justify-center">
+                <img
+                  src={logo.src}
+                  alt={logo.alt}
+                  className="h-auto max-h-8 w-auto object-contain"
+                />
+              </div>
+            ))}
+            </div>
           </div>
         </div>
       </section>
