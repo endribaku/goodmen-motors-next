@@ -28,14 +28,14 @@ export default function ImageGallery({ car }: ImageGalleryProps) {
   const currentImage = urlFor(images[currentIndex]).width(2000).height(1500).url();
 
   return (
-    <div className="space-y-4">
+    <div className="w-full space-y-4">
       {/* Main Image */}
-      <div className="relative aspect-4/3 w-full overflow-hidden rounded-lg bg-gray-100 min-h-[500px]">
+      <div className="relative aspect-4/3 w-full max-w-full overflow-hidden  bg-gray-100 min-h-[300px] md:min-h-[500px]">
         <Image
           src={currentImage}
           alt={images[currentIndex].alt || car.title}
           fill
-          sizes="(max-width: 1024px) 100vw, 60vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 60vw"
           className="object-cover"
         />
       </div>
@@ -47,7 +47,7 @@ export default function ImageGallery({ car }: ImageGalleryProps) {
               type="button"
               key={`${image.asset?._ref}-${index}`}
               onClick={() => setCurrentIndex(index)}
-              className={`relative aspect-4/3 overflow-hidden rounded-lg transition-opacity ${
+              className={`relative aspect-4/3 overflow-hidden transition-opacity ${
                 currentIndex === index
                   ? 'opacity-100'
                   : 'opacity-70 hover:opacity-100'

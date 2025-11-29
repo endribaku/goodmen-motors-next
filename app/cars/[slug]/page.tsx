@@ -146,9 +146,9 @@ export default async function CarPage({ params }: CarPageProps) {
           KTHEHU TE MAKINAT
         </Link>
 
-        <div className="grid gap-24 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="grid gap-12 md:gap-24 lg:grid-cols-[1.2fr_0.8fr]">
           {/* Left Column - Images */}
-          <div>
+          <div className="w-full overflow-hidden">
             <ImageGallery car={car} />
           </div>
 
